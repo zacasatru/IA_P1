@@ -72,6 +72,25 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
+def _graphSearch(problem, openList):
+    currentNode = problem.getStartState()
+    currentPath = []
+    closeList = []
+    while True:
+        if problem.isGoalState(currentNode):
+            return [state[1] for state in currentPath]
+        if currentNode not in closeList:
+            closeList.append(currentNode)
+            successors = problem.getSuccessors(currentNode)
+            for successor in successors:
+                openList.push(currentPath + [successor])
+        if openList.isEmpty():
+            return None
+        currentPath = openList.pop()
+        currentNode = currentPath[-1][0]
+    return None
+
+
 def depthFirstSearch(problem):
     """
     Search the deepest nodes in the search tree first.
@@ -86,13 +105,11 @@ def depthFirstSearch(problem):
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    return _graphSearch(problem, util.Stack())
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    return _graphSearch(problem, util.Queue())
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
