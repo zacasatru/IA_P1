@@ -83,7 +83,10 @@ def _graphSearch(problem, openList):
             closeList.append(currentNode)
             successors = problem.getSuccessors(currentNode)
             for successor in successors:
-                openList.push(currentPath + [successor])
+                if isinstance(openList, util.PriorityQueue) and not isinstance(openList, util.PriorityQueueWithFunction):
+                    openList.push(currentPath + [successor], problem.getCostOfActions([state[1] for state in currentPath]) + successor[2])
+                else:
+                    openList.push(currentPath + [successor])
         if openList.isEmpty():
             return None
         currentPath = openList.pop()
@@ -113,7 +116,7 @@ def breadthFirstSearch(problem):
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
+    return _graphSearch(problem, util.PriorityQueue())
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
@@ -126,6 +129,9 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
+    def heuristicEvaluation(x):
+        return problem.getCostOfActions([state[1] for state in x]) + heuristic(x[-1][0], problem)
+    return _graphSearch(problem, util.PriorityQueueWithFunction(heuristicEvaluation))
     util.raiseNotDefined()
 
 
