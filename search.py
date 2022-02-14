@@ -88,10 +88,9 @@ def _graphSearch(problem, openList):
                 else:
                     openList.push(currentPath + [successor])
         if openList.isEmpty():
-            return None
+            return []
         currentPath = openList.pop()
         currentNode = currentPath[-1][0]
-    return None
 
 
 def depthFirstSearch(problem):
