@@ -19,6 +19,26 @@ Pacman agents (in searchAgents.py).
 
 import util
 
+class Node:
+
+    def __init__(self, problem, gameState=None, pathToState=[]):
+        self.problem = problem
+        if (gameState is None):
+            self.position = self.problem.getStartState()
+            self.path = []
+            self.cost = 0
+        else:
+            self.position = gameState[0]
+            self.path = pathToState + [gameState[1]]
+            self.cost = self.problem.getCostOfActions(pathToState) + gameState[2]
+        
+    def isGoalState(self):
+        return self.problem.isGoalState(self.position)
+
+    def getSuccessors(self):
+        successors = self.problem.getSuccessors(self.position)
+        return map(lambda successor: Node(self.problem, successor, self.path), successors)
+
 class SearchProblem:
     """
     This class outlines the structure of a search problem, but doesn't implement
@@ -72,7 +92,7 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
-def _graphSearch(problem, openList):
+""" def _graphSearch(problem, openList):
     currentNode = problem.getStartState()
     currentPath = []
     closeList = []
@@ -90,7 +110,21 @@ def _graphSearch(problem, openList):
         if openList.isEmpty():
             return []
         currentPath = openList.pop()
-        currentNode = currentPath[-1][0]
+        currentNode = currentPath[-1][0] """
+
+def _graphSearch(problem, openList):
+    closeList = [] # Iniciar lista cerrados como lista vacia
+    openList.push(Node(problem)) # Iniciar lista abiertos con el nodo raiz
+    while not openList.isEmpty():
+        currentNode = openList.pop()
+        if currentNode.isGoalState():
+            return currentNode.path
+        if currentNode.position not in closeList:
+            closeList.append(currentNode.position)
+            successors = currentNode.getSuccessors()
+            for successor in successors:
+                openList.push(successor)
+    return []
 
 
 def depthFirstSearch(problem):
@@ -108,14 +142,17 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     return _graphSearch(problem, util.Stack())
+    util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     return _graphSearch(problem, util.Queue())
+    util.raiseNotDefined()
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
-    return _graphSearch(problem, util.PriorityQueue())
+    #return _graphSearch(problem, util.PriorityQueue())
+    return _graphSearch(problem, util.PriorityQueueWithFunction(lambda node : node.cost))
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
@@ -127,9 +164,7 @@ def nullHeuristic(state, problem=None):
 
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    def heuristicEvaluation(x):
-        return problem.getCostOfActions([state[1] for state in x]) + heuristic(x[-1][0], problem)
+    heuristicEvaluation = lambda node: node.cost + heuristic(node.position, problem)
     return _graphSearch(problem, util.PriorityQueueWithFunction(heuristicEvaluation))
     util.raiseNotDefined()
 
