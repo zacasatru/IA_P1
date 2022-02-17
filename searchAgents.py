@@ -272,9 +272,9 @@ class CornersProblem(search.SearchProblem):
 
     You must select a suitable state space and successor function
     """
-# el estado viene definido como [a,b], siendo a las coordenadas, y b una lista de 
-# true o false, en funcion de si ha sido visitada la esquina o no.
-# la lista de visitados tiene el orden: left-bot, left-top, right-bot, right-top
+    # El estado viene definido como [x,y], siendo x las coordenadas, e y una lista de 
+    # true o false, en funcion de si ha sido visitada la esquina o no.
+    # La lista de visitados tiene el orden: left-bot, left-top, right-bot, right-top
     def __init__(self, startingGameState):
         """
         Stores the walls, pacman's starting position and corners.
@@ -283,15 +283,14 @@ class CornersProblem(search.SearchProblem):
         self.startingPosition = startingGameState.getPacmanPosition()
         top, right = self.walls.height-2, self.walls.width-2
         self.corners = ((1,1), (1,top), (right, 1), (right, top))
-        # right-top, right-bot, left-bot, left-top
         for corner in self.corners:
             if not startingGameState.hasFood(*corner):
                 print('Warning: no food in corner ' + str(corner))
         self._expanded = 0 # DO NOT CHANGE; Number of search nodes expanded
-        # Please add any code here which you would like to use
-        # in initializing the problem
+
+        # Codigo aniadido
         self.startState = [self.startingPosition, [False, False, False, False]]
-        if self.startingPosition in self.corners:
+        if self.startingPosition in self.corners:   # Caso en que la posicion inicial es esquina
             self.startState[1][self.corners.index(self.startingPosition)] = True
 
     def getStartState(self):
@@ -300,14 +299,12 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         return self.startState
-        util.raiseNotDefined()
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
-        return False not in state[1]
-        util.raiseNotDefined()
+        return False not in state[1] # Devuelve False si hay alguna esquina a False (no visitada)
 
     def getSuccessors(self, state):
         """
@@ -322,25 +319,18 @@ class CornersProblem(search.SearchProblem):
 
         successors = []
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
-            # Add a successor state to the successor list if the action is legal
-            # Here's a code snippet for figuring out whether a new position hits a wall:
-            #   x,y = currentPosition
-            #   dx, dy = Actions.directionToVector(action)
-            #   nextx, nexty = int(x + dx), int(y + dy)
-            #   hitsWall = self.walls[nextx][nexty]
-
-            x,y = state[0]
+            x, y = state[0]
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             if not self.walls[nextx][nexty]:
                 newStateFlags = state[1].copy()
-                if (nextx,nexty) in self.corners:
-                    newStateFlags[self.corners.index((nextx,nexty))] = True
-                    
+                if (nextx, nexty) in self.corners:
+                    newStateFlags[self.corners.index((nextx, nexty))] = True
+
                 nextState = [(nextx, nexty), newStateFlags]
 
-                successors.append( ( nextState, action, 1) )
-        self._expanded += 1 # DO NOT CHANGE
+                successors.append((nextState, action, 1))
+        self._expanded += 1  # DO NOT CHANGE
         return successors
 
     def getCostOfActions(self, actions):
@@ -391,7 +381,7 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     """
-    La distancia de manhattan es mas eficiente que la distancia euclidea
+    La distancia de Manhattan es mas eficiente que la distancia euclidea
     """
     stateFlags = state[1] 
     unvisitedCorners = list(filter(lambda corner : not stateFlags[corners.index(corner)], corners))

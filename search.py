@@ -92,25 +92,6 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
-""" def _graphSearch(problem, openList):
-    currentNode = problem.getStartState()
-    currentPath = []
-    closeList = []
-    while True:
-        if problem.isGoalState(currentNode):
-            return [state[1] for state in currentPath]
-        if currentNode not in closeList:
-            closeList.append(currentNode)
-            successors = problem.getSuccessors(currentNode)
-            for successor in successors:
-                if isinstance(openList, util.PriorityQueue) and not isinstance(openList, util.PriorityQueueWithFunction):
-                    openList.push(currentPath + [successor], problem.getCostOfActions([state[1] for state in currentPath]) + successor[2])
-                else:
-                    openList.push(currentPath + [successor])
-        if openList.isEmpty():
-            return []
-        currentPath = openList.pop()
-        currentNode = currentPath[-1][0] """
 
 def _graphSearch(problem, openList):
     closeList = [] # Iniciar lista cerrados como lista vacia
@@ -128,33 +109,16 @@ def _graphSearch(problem, openList):
 
 
 def depthFirstSearch(problem):
-    """
-    Search the deepest nodes in the search tree first.
-
-    Your search algorithm needs to return a list of actions that reaches the
-    goal. Make sure to implement a graph search algorithm.
-
-    To get started, you might want to try some of these simple commands to
-    understand the search problem that is being passed in:
-
-    print("Start:", problem.getStartState())
-    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-    print("Start's successors:", problem.getSuccessors(problem.getStartState()))
-    """
+    """Search the deepest nodes in the search tree first."""
     return _graphSearch(problem, util.Stack())
-    util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     return _graphSearch(problem, util.Queue())
-    util.raiseNotDefined()
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
-    #return _graphSearch(problem, util.PriorityQueue())
     return _graphSearch(problem, util.PriorityQueueWithFunction(lambda node : node.cost))
-    util.raiseNotDefined()
-
 def nullHeuristic(state, problem=None):
     """
     A heuristic function estimates the cost from the current state to the nearest
@@ -166,7 +130,6 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     heuristicEvaluation = lambda node: node.cost + heuristic(node.position, problem)
     return _graphSearch(problem, util.PriorityQueueWithFunction(heuristicEvaluation))
-    util.raiseNotDefined()
 
 
 # Abbreviations
