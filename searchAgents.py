@@ -12,6 +12,10 @@
 # Pieter Abbeel (pabbeel@cs.berkeley.edu).
 
 
+# Autores: Victor Perez Cano (victor.perezcano@estudiante.uam.es)
+#          Ignacio Bernardez Toral (ignacio.bernardez@estudiante.uam.es)
+
+
 """
 This file contains all of the agents that can be selected to control Pacman.  To
 select an agent, use the '-p' option when running pacman.py.  Arguments can be
